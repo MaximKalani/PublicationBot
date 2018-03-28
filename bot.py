@@ -34,6 +34,7 @@ def get_data():
         timeout.cancel()
 
 def send_pic(att):
+    logging.info('PHOTO detected')
     url = att['photo']['photo_604']
     f = open('out.jpg','wb')
     f.write(urllib.request.urlopen(url).read())
@@ -42,6 +43,22 @@ def send_pic(att):
     bot.send_photo(CHANNEL_NAME, img)
     img.close()
         
+def send_doc(att):
+    logging.info('DOC detected')
+    if 'gif' in att['doc']['ext']:
+        logging.info('ITS GIF!')
+        if att['doc']['size']<=5000000:   
+            logging.info('GIF is small enough')
+            url = att['doc']['url']
+            f = open('out.gif','wb')
+            f.write(urllib.request.urlopen(url).read())
+            f.close()
+            doc = open('out.gif', 'rb')
+            bot.send_document(CHANNEL_NAME, doc)
+            doc.close()
+        else:
+            logging.info('GIF is too large, skipping')
+
 def send_new_posts(items, last_id):
     for item in items:
         if item['id'] <= last_id:
@@ -54,6 +71,8 @@ def send_new_posts(items, last_id):
             for att in item['attachments']:
                 if 'photo' in att:
                     send_pic(att)
+                if 'doc' in att:
+                    send_doc(att)
                     
                 
         # Спим секунду, чтобы избежать разного рода ошибок и ограничений (на всякий случай!)

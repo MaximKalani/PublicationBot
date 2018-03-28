@@ -1,5 +1,2 @@
-__pycache__
-.vscode
-*.log
-*.txt
-tokens.py
+*
+!bot.py
