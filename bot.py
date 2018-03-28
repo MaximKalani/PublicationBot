@@ -11,6 +11,7 @@ from tokens import BOT_TOKEN, VK_TOKEN
 # Каждый раз получаем по 10 последних записей со стены
 URL_VK = 'https://api.vk.com/method/wall.get?domain=overhear&count=10&filter=owner' + VK_TOKEN + '&v=5.73'
 FILENAME_VK = 'last_known_id.txt'
+BASE_POST_URL = 'https://vk.com/wall-39270586_'
 
 CHANNEL_NAME = '@omgtest'
 
