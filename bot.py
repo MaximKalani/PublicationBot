@@ -5,13 +5,14 @@ import eventlet
 import requests
 import logging
 import telebot
+import urllib
 from time import sleep
 from tokens import BOT_TOKEN, VK_TOKEN
 
 # Каждый раз получаем по 10 последних записей со стены
-URL_VK = 'https://api.vk.com/method/wall.get?domain=overhear&count=10&filter=owner&v=5.73&access_token=' + VK_TOKEN
+URL_VK = 'https://api.vk.com/method/wall.get?domain=mhkon&count=10&filter=owner&v=5.73&access_token=' + VK_TOKEN
 FILENAME_VK = 'last_known_id.txt'
-BASE_POST_URL = 'https://vk.com/wall-39270586_'
+BASE_POST_URL = 'https://vk.com/wall-'
 
 CHANNEL_NAME = '@omgtest'
 
@@ -32,13 +33,29 @@ def get_data():
     finally:
         timeout.cancel()
 
+def send_pic(att):
+    url = att['photo']['photo_604']
+    f = open('out.jpg','wb')
+    f.write(urllib.request.urlopen(url).read())
+    f.close()
+    img = open('out.jpg', 'rb')
+    bot.send_photo(CHANNEL_NAME, img)
+    img.close()
         
 def send_new_posts(items, last_id):
     for item in items:
         if item['id'] <= last_id:
             break
-        link = '{!s}{!s}_{!s}'.format(BASE_POST_URL, str(-item['owner_id']), item['id'])
-        bot.send_message(CHANNEL_NAME, item['text']+'\n\nSource: '+ link)
+        if item['text'] != '':
+            link = '{!s}{!s}_{!s}'.format(BASE_POST_URL, str(-item['owner_id']), item['id'])
+            bot.send_message(CHANNEL_NAME, item['text']+'\n\nSource: '+ link, disable_web_page_preview=1)
+
+        if 'attachments' in item:
+            for att in item['attachments']:
+                if 'photo' in att:
+                    send_pic(att)
+                    
+                
         # Спим секунду, чтобы избежать разного рода ошибок и ограничений (на всякий случай!)
         time.sleep(1)
     return      
