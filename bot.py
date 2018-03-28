@@ -11,8 +11,6 @@ from tokens import BOT_TOKEN, VK_TOKEN
 # Каждый раз получаем по 10 последних записей со стены
 URL_VK = 'https://api.vk.com/method/wall.get?domain=overhear&count=10&filter=owner' + VK_TOKEN + '&v=5.73'
 FILENAME_VK = 'last_known_id.txt'
-BASE_POST_URL = 'https://vk.com/wall-'
-
 
 CHANNEL_NAME = '@omgtest'
 
@@ -21,7 +19,6 @@ CHANNEL_NAME = '@omgtest'
 SINGLE_RUN = True
 
 bot = telebot.TeleBot(BOT_TOKEN)
-
 
 def get_data():
     timeout = eventlet.Timeout(10)
@@ -39,9 +36,8 @@ def send_new_posts(items, last_id):
     for item in items:
         if item['id'] <= last_id:
             break
-        #link = '{!s}{!s}_{!s}'.format(BASE_POST_URL, str(-item['owner_id']), item['id'])
-        bot.send_message(CHANNEL_NAME, item['text'])
-        #
+        link = '{!s}{!s}_{!s}'.format(BASE_POST_URL, str(-item['owner_id']), item['id'])
+        bot.send_message(CHANNEL_NAME, item['text']+'\n\nSource: '+ link)
         # Спим секунду, чтобы избежать разного рода ошибок и ограничений (на всякий случай!)
         time.sleep(1)
     return      
