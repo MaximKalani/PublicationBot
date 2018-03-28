@@ -45,7 +45,6 @@ def send_new_posts(items, last_id):
         # Спим секунду, чтобы избежать разного рода ошибок и ограничений (на всякий случай!)
         time.sleep(1)
     return      
-        
 
 def check_new_posts_vk():
     # Пишем текущее время начала
