@@ -23,6 +23,7 @@ SINGLE_RUN = True
 bot = telebot.TeleBot(BOT_TOKEN)
 
 def get_data():
+    #функция возвращает 10 последних постов
     timeout = eventlet.Timeout(10)
     try:
         feed = requests.get(URL_VK)
@@ -34,6 +35,7 @@ def get_data():
         timeout.cancel()
 
 def send_pic(att):
+    #функция скачивает фото и отправляет его сообщением
     logging.info('PHOTO detected')
     url = att['photo']['photo_604']
     f = open('out.jpg','wb')
@@ -44,6 +46,7 @@ def send_pic(att):
     img.close()
         
 def send_doc(att):
+    #функция скачивает документ и отправляет его сообщением
     logging.info('DOC detected')
     if 'gif' in att['doc']['ext']:
         logging.info('ITS GIF!')
@@ -60,14 +63,18 @@ def send_doc(att):
             logging.info('GIF is too large, skipping')
 
 def send_new_posts(items, last_id):
+    #функция отправляет текст и проверяет посты на наличие вложений
     for item in items:
         if item['id'] <= last_id:
+            #если пост уже был обработан ранее - прекратить
             break
         if item['text'] != '':
+            #если в посте есть текст, то отправить его + ссылку на оригинальный пост
             link = '{!s}{!s}_{!s}'.format(BASE_POST_URL, str(-item['owner_id']), item['id'])
             bot.send_message(CHANNEL_NAME, item['text']+'\n\nSource: '+ link, disable_web_page_preview=1)
 
         if 'attachments' in item:
+            #если есть вложения - обработать их
             for att in item['attachments']:
                 if 'photo' in att:
                     send_pic(att)
