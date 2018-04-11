@@ -18,7 +18,7 @@ CHANNEL_NAME = '@omgtest'
 
 # Если True, предполагается использование cron для запуска скрипта
 # Если False, процесс запускается и постоянно висит запущенный
-SINGLE_RUN = False
+SINGLE_RUN = True
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
