@@ -7,14 +7,14 @@ import logging
 import telebot
 import urllib
 from time import sleep
-from config import BOT_TOKEN, VK_TOKEN, VK_GROUP
+from config import BOT_TOKEN, VK_TOKEN, VK_GROUP, CHANNEL_NAME
 
 # Каждый раз получаем по 10 последних записей со стены
 URL_VK = 'https://api.vk.com/method/wall.get?domain='+ VK_GROUP +'&count=10&filter=owner&v=5.73&access_token=' + VK_TOKEN
 FILENAME_VK = 'last_known_id.txt'
 BASE_POST_URL = 'https://vk.com/wall-'
 
-CHANNEL_NAME = '@omgtest'
+
 
 # Если True, предполагается использование cron для запуска скрипта
 # Если False, процесс запускается и постоянно висит запущенный
